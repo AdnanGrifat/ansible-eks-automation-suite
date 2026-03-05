@@ -1,4 +1,0 @@
----
-user_service_port: 5000
-order_service_port: 5000
-replicas: 2
