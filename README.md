@@ -1,4 +1,38 @@
+
+
+
 # Ansible EKS Automation Suite (CentOS)
+
+## Architecture
+
+This project demonstrates automated infrastructure configuration using Ansible.
+
+Components:
+
+Master Node
+- Prometheus monitoring server
+- Ansible control node
+- Automation playbooks
+
+CentOS Nodes
+- Node Exporter monitoring agent
+- Hardened Linux baseline configuration
+- firewalld security configuration
+
+Monitoring Stack
+- Prometheus scrapes metrics from Node Exporter
+- Systemd services managed via Ansible roles
+
+Automation Roles
+- linux_baseline
+- node_exporter
+- prometheus
+- k8s_deploy
+- k8s_monitoring
+
+
+
+
 
 This repository demonstrates a production-style Ansible automation project that:
 - Baselines CentOS hosts (packages, SSH hardening, firewall)
