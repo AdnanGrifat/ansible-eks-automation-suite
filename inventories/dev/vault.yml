@@ -1,0 +1,3 @@
+# Template (optional): encrypt this file with ansible-vault.
+# Example:
+# dockerhub_token: "REPLACE_ME"

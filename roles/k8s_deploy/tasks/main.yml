@@ -1,0 +1,79 @@
+---
+- name: Ensure kubeconfig exists
+  ansible.builtin.stat:
+    path: "{{ kubeconfig_path }}"
+  register: kubeconfig_stat
+
+- name: Fail if kubeconfig missing
+  ansible.builtin.fail:
+    msg: "kubeconfig not found at {{ kubeconfig_path }}. Update inventories/dev/group_vars/all.yml."
+  when: not kubeconfig_stat.stat.exists
+
+- name: Create namespace
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig_path }}"
+    state: present
+    definition: "{{ lookup('template', 'namespace.yml.j2') }}"
+
+- name: Apply ConfigMap (micro-config)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig_path }}"
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: micro-config
+        namespace: "{{ micro_namespace }}"
+      data:
+        APP_ENV: "dev"
+
+- name: Deploy user-service
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig_path }}"
+    state: present
+    definition: "{{ lookup('template', 'user-deploy.yml.j2') }}"
+
+- name: Service for user-service (ClusterIP)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig_path }}"
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: user-service
+        namespace: "{{ micro_namespace }}"
+      spec:
+        type: ClusterIP
+        selector:
+          app: user-service
+        ports:
+          - name: http
+            port: "{{ user_service_port }}"
+            targetPort: "{{ user_service_port }}"
+
+- name: Deploy order-service
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig_path }}"
+    state: present
+    definition: "{{ lookup('template', 'order-deploy.yml.j2') }}"
+
+- name: Service for order-service (LoadBalancer)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig_path }}"
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: order-service
+        namespace: "{{ micro_namespace }}"
+      spec:
+        type: LoadBalancer
+        selector:
+          app: order-service
+        ports:
+          - name: http
+            port: 80
+            targetPort: "{{ order_service_port }}"

@@ -1,0 +1,7 @@
+---
+- name: Baseline CentOS nodes + install Node Exporter
+  hosts: centos_nodes
+  become: true
+  roles:
+    - linux_baseline
+    - node_exporter

@@ -1,0 +1,13 @@
+---
+ansible_user: root
+become: true
+
+dockerhub_user: adnan1978
+user_service_image: "{{ dockerhub_user }}/user-service:1.0"
+order_service_image: "{{ dockerhub_user }}/order-service:1.0"
+
+kubeconfig_path: "/root/.kube/config"
+micro_namespace: "micro"
+
+node_exporter_version: "1.7.0"
+node_exporter_listen_address: "0.0.0.0:9100"

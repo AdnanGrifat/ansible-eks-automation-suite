@@ -1,0 +1,8 @@
+---
+- name: Deploy microservices to Kubernetes
+  hosts: k8s
+  become: false
+  roles:
+    - k8s_deploy
+    - role: k8s_monitoring
+      when: enable_k8s_monitoring | bool
