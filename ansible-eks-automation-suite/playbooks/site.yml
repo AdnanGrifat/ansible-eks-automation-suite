@@ -1,0 +1,15 @@
+---
+- name: Baseline CentOS nodes + install Node Exporter
+  hosts: centos_nodes
+  become: true
+  roles:
+    - linux_baseline
+    - node_exporter
+
+- name: Deploy microservices to Kubernetes
+  hosts: k8s
+  become: false
+  roles:
+    - k8s_deploy
+    - role: k8s_monitoring
+      when: enable_k8s_monitoring | bool

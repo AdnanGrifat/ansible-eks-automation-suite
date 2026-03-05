@@ -1,0 +1,14 @@
+# Minimal hardened sshd_config (demo)
+Port 22
+Protocol 2
+PermitRootLogin yes
+PasswordAuthentication yes
+ChallengeResponseAuthentication no
+UsePAM yes
+X11Forwarding no
+AllowTcpForwarding no
+ClientAliveInterval 300
+ClientAliveCountMax 2
+MaxAuthTries 4
+LoginGraceTime 30
+Subsystem sftp /usr/libexec/openssh/sftp-server

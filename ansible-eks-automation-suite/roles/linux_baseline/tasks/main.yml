@@ -1,0 +1,42 @@
+---
+- name: Ensure base packages are installed (CentOS/RHEL)
+  ansible.builtin.dnf:
+    name:
+      - curl
+      - wget
+      - git
+      - vim
+      - tar
+      - unzip
+      - bind-utils
+      - firewalld
+    state: present
+    update_cache: true
+
+- name: Ensure firewalld is enabled and running
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Allow SSH in firewalld
+  ansible.posix.firewalld:
+    service: ssh
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Deploy hardened sshd_config
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0600"
+  notify: restart sshd
+
+- name: Ensure sshd is enabled and running
+  ansible.builtin.service:
+    name: sshd
+    state: started
+    enabled: true

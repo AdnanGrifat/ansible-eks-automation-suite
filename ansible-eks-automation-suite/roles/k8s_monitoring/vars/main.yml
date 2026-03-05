@@ -1,0 +1,4 @@
+---
+monitoring_namespace: "monitoring"
+prom_stack_release: "kps"
+prom_stack_chart: "prometheus-community/kube-prometheus-stack"
