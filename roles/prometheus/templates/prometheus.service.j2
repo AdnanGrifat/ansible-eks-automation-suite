@@ -1,0 +1,19 @@
+[Unit]
+Description=Prometheus Monitoring
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User={{ prometheus_user }}
+Group={{ prometheus_user }}
+Type=simple
+ExecStart={{ prometheus_dir }}/prometheus \
+  --config.file={{ prometheus_dir }}/prometheus.yml \
+  --storage.tsdb.path={{ prometheus_data_dir }} \
+  --web.listen-address={{ prometheus_listen_address }}
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
